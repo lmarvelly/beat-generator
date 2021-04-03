@@ -1,28 +1,22 @@
-// connects beats to create faster notes
-let beam;
-// the tail of the note
-let tail = " | ";
-// heads of notes
-let head = "o " ;
-// the whole notes
-let notes;
+// Create indivitual measures like in eighth-notes
 
-// beam = "", tail = "", head = ""
+const n = require ("./components/note-components");
+
 let quaterNotes = (num = 0) =>
 {
 	let gap = "    "; 
 
-	if (num > 1) 
+	if (num >= 1) 
 	{
-		tail += gap;
-		head += gap;
+		n.tail += gap;
+		n.head += gap;
 
 		let tails = "";
 		let heads = "";
 		for (let index = 0; index < num; index++) 
 		{
-			tails += tail;
-			heads += head;
+			tails += n.tail;
+			heads += n.head;
 		}
 		tails += "\n";
 		heads += "\n";
@@ -31,7 +25,9 @@ let quaterNotes = (num = 0) =>
 
 		return notes;
 	}
-	else return "";
+	else if (num === 0) return "Fatal Error: Number needs to be more than 0";
+	else if (num > 4) return "Fatal Error: Number needs to be 4 or less (but more than zero)";
+
 }
 
-console.log(quaterNotes(10));
+console.log(quaterNotes(5));
