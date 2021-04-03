@@ -65,7 +65,7 @@ let eighthNotes = (num = 0) =>
 
 	if (num === 1)
 	{
-		return singleEighth();
+		console.log(singleEighth());
 	}
 	else
 	{
