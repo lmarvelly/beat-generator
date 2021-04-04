@@ -4,7 +4,7 @@ const n = require ("./components/note-components");
 
 let quaterNotes = (num = 0) =>
 {
-	let gap = "    "; 
+	let gap = "  "; 
 
 	if (num >= 1) 
 	{

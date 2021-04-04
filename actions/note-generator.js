@@ -16,9 +16,18 @@ let addMeasureSpacing = () =>
 
 let addBarSpacing = () =>
 {
-	n.beat.beams += "   |";
+	adjustBeamSpacing();
+	n.beat.beams += "  |";
 	n.beat.tails += "  | ";
 	n.beat.heads += "  | ";
+}
+
+let adjustBeamSpacing = () =>
+{
+	while(n.beat.beams.length < n.beat.tails.length && n.beat.beams.length != n.beat.tails.length)
+	{
+		n.beat.beams += " ";
+	}
 }
 
 let ifNewBeat = () =>
@@ -30,6 +39,24 @@ let ifNewBeat = () =>
 	else
 	{
 		addMeasureSpacing();
+	}
+}
+
+let quaterGenerator = (num) =>
+{
+	ifNewBeat();
+
+	if (num > 4)
+	{
+		console.log("Fatal error: More than 4");
+	}
+	else
+	{
+		for (let index = 0; index < num; index++) 
+		{
+			n.beat.tails += "  " + n.tail;
+			n.beat.heads += "  " + n.head;
+		}
 	}
 }
 
@@ -84,6 +111,7 @@ let eighthNotes = (num = 0) =>
 			eighthGenerator(4);
 			addBarSpacing();
 		}
+
 		if (evenMeasures === false)
 		{
 			eighthGenerator(4);
@@ -101,6 +129,28 @@ let eighthNotes = (num = 0) =>
 	}
 }
 
+let quarterNotes = (num = 0) =>
+{
+	if (num === 0) "Fatal error: Zero entered";
+	else if (isNaN(num)) "Fatal error: Not a number";
+
+	// full bars of 4 quater notes
+	let fullBars = Math.floor(num / 4);
+	let remainder = num % 4;
+
+	let barIndex = 0;
+	for (barIndex; barIndex < fullBars; barIndex++)
+	{
+		quaterGenerator(4);
+		addBarSpacing();
+	}
+	if(remainder > 1)
+	{
+		quaterGenerator(remainder);
+		addBarSpacing();
+	}
+}
+
 let singleEighth = () =>
 {
 	ifNewBeat();
@@ -110,4 +160,4 @@ let singleEighth = () =>
 }
 
 
-module.exports = { addLineBreaks, addMeasureSpacing, ifNewBeat, eighthGenerator, eighthNotes };
+module.exports = { addLineBreaks, addMeasureSpacing, ifNewBeat, eighthGenerator, eighthNotes, quaterGenerator, quarterNotes };
