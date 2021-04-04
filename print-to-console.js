@@ -40,13 +40,3 @@ readline.question('How many bars do you want? ', number =>
 
 	readline.close();
 });
-
-// readline.question('How many quater notes do you want? ', number => 
-// {
-// 	number = Number(number); 
-// 	gen.quaterNotes(number);
-// 	print();
-
-// 	readline.close();
-// });
-
