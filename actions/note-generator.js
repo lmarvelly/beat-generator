@@ -42,24 +42,6 @@ let ifNewBeat = () =>
 	}
 }
 
-let quaterGenerator = (num) =>
-{
-	ifNewBeat();
-
-	if (num > 4)
-	{
-		console.log("Fatal error: More than 4");
-	}
-	else
-	{
-		for (let index = 0; index < num; index++) 
-		{
-			n.beat.tails += "  " + n.tail;
-			n.beat.heads += "  " + n.head;
-		}
-	}
-}
-
 let eighthGenerator = (num) =>
 {
 	ifNewBeat();
@@ -125,6 +107,26 @@ let eighthNotes = (num = 0) =>
 		{
 			eighthGenerator(remainder);
 			addBarSpacing();
+		}
+	}
+}
+
+let quaterGenerator = (num) =>
+{
+	// For some reason if ifNewBeat() is executed it has extra 
+	// space at the beginging of the measure
+	// ifNewBeat();
+
+	if (num > 4)
+	{
+		console.log("Fatal error: More than 4");
+	}
+	else
+	{
+		for (let index = 0; index < num; index++) 
+		{
+			n.beat.tails += "  " + n.tail;
+			n.beat.heads += "  " + n.head;
 		}
 	}
 }
