@@ -1,165 +1,186 @@
-const n = require ("../components/note-components");
+const beam =  " _";
+const barsPerPage = 4;
+const head = "o " ;
+const singleEighthTail = " |)";
+const normalSpacing = "    ";
+const halfSpacing = "  ";
+const tail = " |";
 
-let addLineBreaks = () =>
-{
-	n.beat.beams += "\n";
-	n.beat.tails += "\n";
-	n.beat.heads += "\n";
-}
+let newBeat = true;
 
-let addMeasureSpacing = () =>
+class Bar
 {
-	n.beat.beams += "    ";
-	n.beat.tails += "  ";
-	n.beat.heads += "  ";
-}
-
-let addBarSpacing = () =>
-{
-	adjustBeamSpacing();
-	n.beat.beams += "  |";
-	n.beat.tails += "  | ";
-	n.beat.heads += "  | ";
-}
-
-let adjustBeamSpacing = () =>
-{
-	while(n.beat.beams.length < n.beat.tails.length && n.beat.beams.length != n.beat.tails.length)
+	constructor (barLength = 4)
 	{
-		n.beat.beams += " ";
+		this.beams = " |";
+		this.tails = " |";
+		this.heads = " |";
+		this.addMeasureSpacing(normalSpacing);
+		this.totalNotesValue = 0;
+		this.barLength = barLength;
 	}
-}
-
-let ifNewBeat = () =>
-{
-	if (n.newBeat) 
+	
+	getBeams ()
 	{
-		n.newBeat = false;
+		return this.beams;
 	}
-	else
+	getTails ()
 	{
-		addMeasureSpacing();
+		return this.tails;
 	}
-}
-
-let eighthGenerator = (num) =>
-{
-	ifNewBeat();
-
-	if (num > 4) 
+	getHeads ()
 	{
-		return "Fatal error: More than 4";
+		return this.heads;
+	}
+	getTotalNotesVal ()
+	{
+		return this.totalNotesValue;
+	}
+	getBar ()
+	{
+		return [ this.getBeams(), this.getTails(), this.getHeads()];
 	}
 
-	if (num === 1)
+	addToBeams ( beam )
 	{
-		singleEighth();
+		this.beams = this.beams + beam;
+		return this.beams
 	}
-	else
+	addToTails ( tails )
 	{
-		for (let i = 1; i < num; i++) 
+		this.tails = this.tails + tails;
+		return this.tails
+	}
+	addToHeads ( head )
+	{
+		this.heads = this.heads + head;
+		return this.heads
+	}
+	addToTotalNotesValue ( value )
+	{
+		this.totalNotesValue = this.totalNotesValue + value;
+		return this.totalNotesValue;
+	}
+	
+	addMeasureSpacing(normalSpacing)
+	{
+		this.addToBeams(normalSpacing);
+		this.addToTails(normalSpacing);
+		this.addToHeads(normalSpacing);
+	}
+	addMeasureStartEnd ()
+	{
+		this.adjustBeamSpacing();
+
+		this.addToBeams("|");
+		this.addToTails("|");
+		this.addToHeads("|");
+	}
+	addSingleEighthNote ()
+	{
+		this.addToTails(singleEighthTail);
+		this.addToHeads(head + " ");
+		this.addMeasureSpacing(normalSpacing);
+		this.adjustBeamSpacing();
+		this.addToTotalNotesValue(0.5);
+		if( this.isMeasureCompleted() )
 		{
-			n.beat.beams += n.beam;
-			n.beat.tails += n.tail;
-			n.beat.heads += n.head;
-		}
-		n.beat.tails += n.tail;
-		n.beat.heads += n.head;
-	}
-}
-
-let eighthNotes = (num = 0) =>
-{
-	if (num === 0) "Fatal error: Zero entered";
-	else if (isNaN(num)) "Fatal error: Not a number";
-
-	// find if there is an even amount of measures
-	let evenMeasures = ((Math.floor(num / 4)) % 2) === 0;
-	// full bars of 8 eighth notes
-	let fullBars = Math.floor(num / 8);
-	// remainding notes after a full bar
-	let remainder = num % 4;
-
-	if (num === 1)
-	{
-		singleEighth();
-	}
-	else
-	{
-		let barIndex = 0;
-		for (barIndex; barIndex < fullBars; barIndex++)
-		{
-			eighthGenerator(4);
-			eighthGenerator(4);
-			addBarSpacing();
-		}
-
-		if (evenMeasures === false)
-		{
-			eighthGenerator(4);
-		}
-		if(remainder === 1)
-		{
-			singleEighth(remainder);
-			addBarSpacing();
-		}
-		else if(remainder > 1)
-		{
-			eighthGenerator(remainder);
-			addBarSpacing();
+			this.addMeasureStartEnd();
 		}
 	}
-}
-
-let quaterGenerator = (num) =>
-{
-	// For some reason if ifNewBeat() is executed it has extra 
-	// space at the beginging of the measure
-	// ifNewBeat();
-
-	if (num > 4)
+	addMultiEighthNotes ( num )
 	{
-		console.log("Fatal error: More than 4");
-	}
-	else
-	{
-		for (let index = 0; index < num; index++) 
+		console.log( num );
+		if ( num > 1 && num < 5)
 		{
-			n.beat.tails += "  " + n.tail;
-			n.beat.heads += "  " + n.head;
+			let addSingleNote = false;
+			let notes = num;
+			this.addToBeams(" ");
+			if ( num % 2 === 1)
+			{
+				notes = notes - 1;
+				addSingleNote = true;
+			}
+			for (let i = 1; i < num; i++) 
+			{
+				this.addToBeams(beam + beam)
+				this.addToTails(tail);
+				this.addToHeads(head);
+				this.addToTails(halfSpacing)
+				this.addToHeads(halfSpacing)
+				this.adjustBeamSpacing();
+				this.addToTotalNotesValue(0.5);
+				if( this.isMeasureCompleted() )
+				{
+					this.addMeasureStartEnd();
+				}
+			}
+			this.addToTails(tail);
+			this.addToHeads(head);
+
+			if ( addSingleNote === true ) 
+			{
+				this.addSingleEighthNote();
+			}
 		}
 	}
-}
-
-let quarterNotes = (num = 0) =>
-{
-	if (num === 0) "Fatal error: Zero entered";
-	else if (isNaN(num)) "Fatal error: Not a number";
-
-	// full bars of 4 quater notes
-	let fullBars = Math.floor(num / 4);
-	let remainder = num % 4;
-
-	let barIndex = 0;
-	for (barIndex; barIndex < fullBars; barIndex++)
+	addEighthNotes ( num )
 	{
-		quaterGenerator(4);
-		addBarSpacing();
+		if ( num === 1 ) 
+		{
+			this.addSingleEighthNote();
+		}
+		else
+		{
+			// TODO add code to add EigthNotes for numbers more than 4
+			this.addMultiEighthNotes( num );
+		}
 	}
-	if(remainder > 1)
+	addQuarterNote ( num )
 	{
-		quaterGenerator(remainder);
-		addBarSpacing();
+		for (let i = 0; i < num; i++) 
+		{
+			this.addToTails(tail);
+			this.addToHeads(head);
+			this.addMeasureSpacing(normalSpacing);
+			this.adjustBeamSpacing();
+			this.addToTotalNotesValue(1);
+			if( this.isMeasureCompleted() )
+			{
+				this.addMeasureStartEnd();
+			}
+		}
+	}
+
+	adjustBeamSpacing ()
+	{
+		// while(bar.beams.length < bar.tails.length 				&& bar.beams.length != bar.tails.length)
+		while ( bar.getBeams().length < bar.getTails().length && bar.getBeams().length != bar.getTails.length )
+		{
+			bar.addToBeams(" ");
+		}
+	}
+
+	isMeasureCompleted ()
+	{
+		if (this.getTotalNotesVal() === this.barLength)
+		{
+			return true;
+		}
+		return false;
 	}
 }
 
-let singleEighth = () =>
-{
-	ifNewBeat();
+let bar = new Bar(4); 
+// bar.addQuarterNote(4);
+bar.addEighthNotes(5);
+// bar.addEighthNotes();
+// bar.addEighthNotes();
+// bar.addEighthNotes();
 
-	n.beat.tails += n.singleTail;
-	n.beat.heads += n.head;
+for (let i = 0; i < bar.getBar().length; i++) 
+{
+	console.log(bar.getBar()[i]);
 }
 
 
-module.exports = { addLineBreaks, addMeasureSpacing, ifNewBeat, eighthGenerator, eighthNotes, quaterGenerator, quarterNotes };
